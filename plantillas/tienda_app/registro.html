@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block titulo %}Crear cuenta{% endblock %}
+
+{% block contenido %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card sombra-suave">
+          <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Crear cuenta</h2>
+            <form method="post">
+              {% csrf_token %}
+              {% for campo in formulario %}
+                <div class="mb-3">
+                  <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                  {{ campo }}
+                  {% if campo.help_text %}
+                    <small class="form-text text-muted">{{ campo.help_text }}</small>
+                  {% endif %}
+                  {% for error in campo.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+              <button class="btn btn-primary w-100" type="submit">Registrarme</button>
+            </form>
+            <p class="mt-3 text-center">
+              ¿Ya tenés cuenta? <a href="{% url 'tienda_app:ingreso' %}">Ingresá acá</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,35 @@
+body {
+  background-color: #f8f9fb;
+}
+
+.sombra-suave {
+  box-shadow: 0 10px 25px rgba(31, 45, 61, 0.08);
+  border: none;
+}
+
+.miniatura-carrito {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+}
+
+footer {
+  background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
+}
+
+.sidebar {
+  padding: 1rem 0;
+}
+
+.sidebar .nav-link {
+  color: #495057;
+  font-weight: 500;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  color: #0d6efd;
+}
+

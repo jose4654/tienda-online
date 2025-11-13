@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block titulo %}Pedido #{{ pedido.id }}{% endblock %}
+
+{% block contenido %}
+  <div class="container py-4">
+    <h2>Pedido #{{ pedido.id }}</h2>
+    <p class="text-muted">Estado actual: {{ pedido.get_status_display }}</p>
+    <p>Creado el {{ pedido.created_at|date:"d/m/Y H:i" }}</p>
+    {% if pedido.shipping_address %}
+      <p><strong>Dirección de envío:</strong> {{ pedido.shipping_address }}</p>
+    {% endif %}
+    {% if pedido.observations %}
+      <p><strong>Observaciones:</strong> {{ pedido.observations }}</p>
+    {% endif %}
+
+    <div class="table-responsive sombra-suave mt-4">
+      <table class="table">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in pedido.items.all %}
+            <tr>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>${{ item.price }}</td>
+              <td>${{ item.subtotal }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-end mt-3">
+      <span class="fs-4 fw-bold">Total: ${{ pedido.total_amount }}</span>
+    </div>
+
+    <a href="{% url 'tienda_app:home' %}" class="btn btn-link mt-4">← Seguir comprando</a>
+  </div>
+{% endblock %}
+

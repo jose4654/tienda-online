@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block titulo %}Finalizar compra{% endblock %}
+
+{% block contenido %}
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-lg-6">
+        <h2>Datos de envío</h2>
+        <form method="post" class="sombra-suave p-4 bg-white rounded">
+          {% csrf_token %}
+          {% for campo in formulario %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+              {{ campo }}
+              {% if campo.help_text %}
+                <small class="form-text text-muted">{{ campo.help_text }}</small>
+              {% endif %}
+              {% for error in campo.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          <button class="btn btn-success" type="submit">Confirmar compra</button>
+        </form>
+      </div>
+      <div class="col-lg-6">
+        <div class="card sombra-suave">
+          <div class="card-body">
+            <h5 class="card-title">Resumen de pago</h5>
+            <p class="card-text">Total a pagar:</p>
+            <p class="display-6">${{ total }}</p>
+            <p class="text-muted">Verificá los datos antes de confirmar la compra.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
