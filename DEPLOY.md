@@ -51,6 +51,15 @@ DEBUG=False
 ALLOWED_HOSTS=tu-app.onrender.com
 ```
 
+#### Admin (opcional - se crea automáticamente):
+```
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@tienda.com
+ADMIN_PASSWORD=tu-password-seguro-aqui
+```
+
+**Nota**: Si no configuras `ADMIN_PASSWORD`, el script no creará el admin automáticamente. Puedes crearlo manualmente después usando el Shell de Render.
+
 #### Mercado Pago:
 ```
 MERCADOPAGO_PUBLIC_KEY=tu-public-key-de-produccion

@@ -15,6 +15,10 @@ cd tienda
 echo "Running migrations..."
 python manage.py migrate --no-input
 
+# Crear superusuario si no existe
+echo "Creating admin user..."
+python ../create_admin.py
+
 # Recolectar archivos estáticos
 echo "Collecting static files..."
 python manage.py collectstatic --no-input
