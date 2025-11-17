@@ -8,12 +8,17 @@ import sys
 import django
 from pathlib import Path
 
-# Obtener el directorio base del proyecto
+# Obtener el directorio base del proyecto (donde está create_admin.py)
 BASE_DIR = Path(__file__).resolve().parent
 
-# Agregar el directorio padre al path para que Django encuentre tienda_app
+# Agregar el directorio base al path para que Django encuentre tienda_app
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
+
+# También agregar el directorio tienda al path para que Django encuentre tienda.settings
+TIENDA_DIR = BASE_DIR / 'tienda'
+if str(TIENDA_DIR) not in sys.path:
+    sys.path.insert(0, str(TIENDA_DIR))
 
 # Configurar Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tienda.settings')
