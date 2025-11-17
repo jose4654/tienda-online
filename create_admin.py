@@ -16,14 +16,15 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# Obtener credenciales de variables de entorno
+# Obtener credenciales de variables de entorno con valores por defecto
 admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
 admin_email = os.environ.get('ADMIN_EMAIL', 'admin@tienda.com')
-admin_password = os.environ.get('ADMIN_PASSWORD', '')
+admin_password = os.environ.get('ADMIN_PASSWORD', 'Admin123!')
 
-if not admin_password:
-    print("ADMIN_PASSWORD no está configurado. Saltando creación de admin.")
-    sys.exit(0)
+# Si no se proporciona contraseña, usar una por defecto segura
+if not admin_password or admin_password == '':
+    admin_password = 'Admin123!'
+    print("⚠️  Usando contraseña por defecto. Cambia la contraseña desde el panel de admin por seguridad.")
 
 # Verificar si el usuario ya existe
 if User.objects.filter(username=admin_username).exists():
