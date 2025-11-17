@@ -17,7 +17,9 @@ python manage.py migrate --no-input
 
 # Crear superusuario si no existe
 echo "Creating admin user..."
-python ../create_admin.py
+cd ..
+python create_admin.py
+cd tienda
 
 # Recolectar archivos estáticos
 echo "Collecting static files..."

@@ -6,9 +6,16 @@ Se ejecuta después de las migraciones.
 import os
 import sys
 import django
+from pathlib import Path
+
+# Obtener el directorio base del proyecto
+BASE_DIR = Path(__file__).resolve().parent
+
+# Agregar el directorio padre al path para que Django encuentre tienda_app
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 
 # Configurar Django
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tienda.settings')
 django.setup()
 
