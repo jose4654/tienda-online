@@ -107,8 +107,8 @@ $env:MERCADOPAGO_NOTIFICATION_URL = "https://tu-dominio.com/webhooks/mercadopago
 
 Valores por defecto (modo prueba) configurados actualmente:
 
-- `MERCADOPAGO_PUBLIC_KEY`: `APP_USR-a14fb7a6-c651-448d-89df-2a11558f760a`
-- `MERCADOPAGO_ACCESS_TOKEN`: `APP_USR-6602017134633117-111712-be669b275c23ec1e2e851e87a8c81677-2995220879`
+- `MERCADOPAGO_PUBLIC_KEY`: ``
+- `MERCADOPAGO_ACCESS_TOKEN`: ``
 - `MERCADOPAGO_SUCCESS_URL`: si no se define, se usa la URL del request actual. Mercado Pago solo permite auto-retorno cuando esta URL es HTTPS; para entornos locales podés exponer el servidor con una herramienta tipo ngrok.
 - `MERCADOPAGO_NOTIFICATION_URL`: opcional, apunta al endpoint que recibirá webhooks si querés procesar notificaciones asincrónicas.
 
@@ -129,8 +129,8 @@ Cuando un usuario completa una compra (checkout), se envía automáticamente una
 Las credenciales están configuradas en `tienda/tienda/settings.py` y pueden sobrescribirse con variables de entorno:
 
 ```powershell
-$env:TELEGRAM_BOT_TOKEN = "7963787924:AAG6Cr_Ymz5ggCFDYvVTLTD3w7Rtqzn5ZxM"
-$env:TELEGRAM_CHAT_ID = "-4965361549"
+$env:TELEGRAM_BOT_TOKEN = ":"
+$env:TELEGRAM_CHAT_ID = "-"
 ```
 
 **Nota**: Si la notificación falla (por ejemplo, por problemas de red), el checkout continúa normalmente. Los errores se registran en los logs de Django.
