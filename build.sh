@@ -15,10 +15,10 @@ cd tienda
 echo "Running migrations..."
 python manage.py migrate --no-input
 
-# Crear superusuario si no existe
-echo "Creating admin user..."
+# Crear o resetear superusuario
+echo "Creating/resetting admin user..."
 cd ..
-python create_admin.py
+python reset_admin_password.py
 cd tienda
 
 # Recolectar archivos estáticos
