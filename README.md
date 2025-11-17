@@ -163,12 +163,7 @@ El panel de administración está personalizado en `tienda_app/admin.py` con:
 - Campos editables en línea
 - Configuración de visualización optimizada
 
-## Próximos Pasos
 
-1. Agregar productos y categorías desde el panel de administración
-2. Crear usuarios de prueba
-3. Personalizar los templates según tus necesidades
-4. Agregar más funcionalidades (pagos, reviews, etc.)
 
 ## Deploy en Render
 
