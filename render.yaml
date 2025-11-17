@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: tienda-online
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "cd tienda && gunicorn tienda.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: MERCADOPAGO_PUBLIC_KEY
+        sync: false
+      - key: MERCADOPAGO_ACCESS_TOKEN
+        sync: false
+      - key: MERCADOPAGO_CURRENCY_ID
+        value: ARS
+      - key: MERCADOPAGO_SUCCESS_URL
+        sync: false
+      - key: MERCADOPAGO_NOTIFICATION_URL
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+

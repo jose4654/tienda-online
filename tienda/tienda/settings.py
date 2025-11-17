@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u_hf2*ukm^j)ng#r6d2r%0niun*o^8zi2lgvr@$wmb#d7dlw4*'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-u_hf2*ukm^j)ng#r6d2r%0niun*o^8zi2lgvr@$wmb#d7dlw4*')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir archivos estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,6 +121,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 # Los archivos estáticos están en el directorio padre
 STATICFILES_DIRS = [BASE_DIR.parent / 'estaticos']
+STATIC_ROOT = BASE_DIR.parent / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -131,3 +134,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'tienda_app:home'
 LOGOUT_REDIRECT_URL = 'tienda_app:home'
 LOGIN_URL = 'tienda_app:ingreso'
+
+# Configuración de Mercado Pago (usar variables de entorno en producción)
+MERCADOPAGO_PUBLIC_KEY = os.environ.get("MERCADOPAGO_PUBLIC_KEY", "")
+MERCADOPAGO_ACCESS_TOKEN = os.environ.get("MERCADOPAGO_ACCESS_TOKEN", "")
+MERCADOPAGO_CURRENCY_ID = os.environ.get("MERCADOPAGO_CURRENCY_ID", "ARS")
+MERCADOPAGO_SUCCESS_URL = os.environ.get("MERCADOPAGO_SUCCESS_URL")
+MERCADOPAGO_NOTIFICATION_URL = os.environ.get("MERCADOPAGO_NOTIFICATION_URL")
+
+# Configuración de Telegram para notificaciones (usar variables de entorno en producción)
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")

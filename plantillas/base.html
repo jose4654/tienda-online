@@ -32,6 +32,11 @@
               <span class="nav-link"><i class="fas fa-user"></i> {{ user.get_username }}</span>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{% url 'tienda_app:mis_pedidos' %}">
+                <i class="fas fa-box"></i> Mis pedidos
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'tienda_app:ver_carrito' %}">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="badge bg-primary">{{ carrito_cantidad_total }}</span>

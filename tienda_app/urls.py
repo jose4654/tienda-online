@@ -16,8 +16,14 @@ urlpatterns = [
     path("carrito/vaciar/", views.vaciar_carrito, name="vaciar_carrito"),
     path("checkout/", views.checkout, name="checkout"),
     path("pedido/<int:pk>/", views.detalle_pedido, name="detalle_pedido"),
+    path("mis-pedidos/", views.mis_pedidos, name="mis_pedidos"),
     path("registro/", views.registrar_usuario, name="registro"),
     path("ingreso/", views.ingresar, name="ingreso"),
     path("salir/", LogoutView.as_view(next_page="tienda_app:home"), name="salir"),
+    path(
+        "pago/mercadopago/resultado/",
+        views.mercadopago_resultado,
+        name="mercadopago_resultado",
+    ),
 ]
 

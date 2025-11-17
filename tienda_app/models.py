@@ -131,6 +131,8 @@ class Order(models.Model):
     )
     shipping_address = models.CharField("Dirección de envío", max_length=250, blank=True)
     observations = models.TextField("Observaciones", blank=True)
+    payment_provider = models.CharField("Proveedor de pago", max_length=40, blank=True)
+    payment_reference = models.CharField("Referencia de pago", max_length=120, blank=True)
 
     class Meta:
         verbose_name = "Pedido"

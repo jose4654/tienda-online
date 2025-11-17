@@ -87,6 +87,53 @@ Abre tu navegador en: http://127.0.0.1:8000
 - **Panel de administración Django**: http://127.0.0.1:8000/admin/
 - **Login**: http://127.0.0.1:8000/ingreso/
 - **Registro**: http://127.0.0.1:8000/registro/
+- **Mis pedidos (cliente autenticado)**: http://127.0.0.1:8000/mis-pedidos/
+- **Retorno de Mercado Pago**: http://127.0.0.1:8000/pago/mercadopago/resultado/
+
+## Pagos con Mercado Pago
+
+El checkout está integrado con Mercado Pago (Checkout Pro). Al confirmar la dirección de envío se crea una preferencia y el usuario es redirigido al `init_point` para completar el pago. El retorno vuelve al endpoint `pago/mercadopago/resultado/`, que actualiza el estado del pedido (aprobado, pendiente o cancelado).
+
+### Variables requeridas
+
+Puedes definirlas como variables de entorno o dejarlas en `tienda/tienda/settings.py` (solo recomendable para desarrollo):
+
+```powershell
+$env:MERCADOPAGO_PUBLIC_KEY = "APP_USR-xxxxx"
+$env:MERCADOPAGO_ACCESS_TOKEN = "APP_USR-xxxxx"
+$env:MERCADOPAGO_SUCCESS_URL = "https://tu-dominio.com/pago/mercadopago/resultado/"
+$env:MERCADOPAGO_NOTIFICATION_URL = "https://tu-dominio.com/webhooks/mercadopago/"
+```
+
+Valores por defecto (modo prueba) configurados actualmente:
+
+- `MERCADOPAGO_PUBLIC_KEY`: `APP_USR-a14fb7a6-c651-448d-89df-2a11558f760a`
+- `MERCADOPAGO_ACCESS_TOKEN`: `APP_USR-6602017134633117-111712-be669b275c23ec1e2e851e87a8c81677-2995220879`
+- `MERCADOPAGO_SUCCESS_URL`: si no se define, se usa la URL del request actual. Mercado Pago solo permite auto-retorno cuando esta URL es HTTPS; para entornos locales podés exponer el servidor con una herramienta tipo ngrok.
+- `MERCADOPAGO_NOTIFICATION_URL`: opcional, apunta al endpoint que recibirá webhooks si querés procesar notificaciones asincrónicas.
+
+Reemplázalos por tus credenciales de producción cuando despliegues el proyecto.
+
+## Notificaciones a Telegram
+
+Cuando un usuario completa una compra (checkout), se envía automáticamente una notificación a tu bot de Telegram con:
+
+- Datos del pedido (número, fecha, estado, total)
+- Datos del comprador (nombre, usuario, email, teléfono, dirección)
+- Lista de productos con cantidades y precios
+- Método de pago y referencia
+- Observaciones del pedido
+
+### Configuración
+
+Las credenciales están configuradas en `tienda/tienda/settings.py` y pueden sobrescribirse con variables de entorno:
+
+```powershell
+$env:TELEGRAM_BOT_TOKEN = "7963787924:AAG6Cr_Ymz5ggCFDYvVTLTD3w7Rtqzn5ZxM"
+$env:TELEGRAM_CHAT_ID = "-4965361549"
+```
+
+**Nota**: Si la notificación falla (por ejemplo, por problemas de red), el checkout continúa normalmente. Los errores se registran en los logs de Django.
 
 ## Tipos de Usuarios
 
@@ -123,10 +170,28 @@ El panel de administración está personalizado en `tienda_app/admin.py` con:
 3. Personalizar los templates según tus necesidades
 4. Agregar más funcionalidades (pagos, reviews, etc.)
 
+## Deploy en Render
+
+El proyecto está preparado para desplegarse en Render. Consulta el archivo [DEPLOY.md](DEPLOY.md) para instrucciones detalladas.
+
+### Resumen rápido:
+
+1. Sube el código a GitHub
+2. Crea un Web Service en Render
+3. Configura las variables de entorno (ver DEPLOY.md)
+4. Render ejecutará automáticamente el build y las migraciones
+
+### Archivos de configuración:
+
+- `build.sh`: Script de build para Render
+- `render.yaml`: Configuración opcional para Render
+- `.gitignore`: Excluye archivos sensibles del repositorio
+
 ## Notas
 
 - El proyecto usa SQLite por defecto (base de datos en `tienda/db.sqlite3`)
 - Los archivos estáticos están en `estaticos/`
 - Los templates están en `plantillas/`
 - Las imágenes de productos se guardan en `tienda/media/`
+- **IMPORTANTE**: No subas credenciales al repositorio. Usa variables de entorno en producción.
 

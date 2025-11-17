@@ -19,6 +19,12 @@ from .formularios import (
     FormularioRegistroCliente,
 )
 from .models import Category, Order, OrderItem, OrderStatus, Product
+from .services import (
+    MercadoPagoError,
+    crear_preferencia_para_pedido,
+    enviar_notificacion_telegram,
+    obtener_pago,
+)
 
 
 def _obtener_carrito(request: HttpRequest) -> Dict[str, Dict[str, Decimal]]:
@@ -100,6 +106,11 @@ def agregar_al_carrito(request: HttpRequest, slug: str) -> HttpResponse:
     }
     request.session.modified = True
     messages.success(request, f"{producto.name} se agregó al carrito.")
+    
+    # Si viene el parámetro seguir_comprando, redirigir a la página principal
+    if request.GET.get("seguir_comprando") == "1":
+        return redirect("tienda_app:home")
+    
     return redirect("tienda_app:ver_carrito")
 
 
@@ -195,10 +206,34 @@ def checkout(request: HttpRequest) -> HttpResponse:
                     price=producto.price,
                 )
 
+            try:
+                preference = crear_preferencia_para_pedido(pedido, request)
+                init_point = preference.get("init_point") or preference.get("sandbox_init_point")
+                if not init_point:
+                    raise MercadoPagoError("Mercado Pago no devolvió una URL válida para continuar con el pago.")
+            except MercadoPagoError as exc:
+                transaction.set_rollback(True)
+                messages.error(
+                    request,
+                    f"No pudimos iniciar el pago con Mercado Pago. {exc}",
+                )
+                return redirect("tienda_app:ver_carrito")
+
+            pedido.payment_provider = "mercadopago"
+            pedido.payment_reference = preference.get("id", "")
+            pedido.save(update_fields=["payment_provider", "payment_reference"])
+
+            # Enviar notificación a Telegram
+            try:
+                enviar_notificacion_telegram(pedido)
+            except Exception:
+                # No fallar el checkout si falla la notificación
+                pass
+
             request.session["carrito"] = {}
             request.session.modified = True
-            messages.success(request, "Pedido confirmado. ¡Gracias por tu compra!")
-            return redirect("tienda_app:detalle_pedido", pk=pedido.pk)
+            messages.info(request, "Te redirigimos a Mercado Pago para completar el pago.")
+            return redirect(init_point)
     else:
         formulario = FormularioCheckout()
 
@@ -217,6 +252,66 @@ def detalle_pedido(request: HttpRequest, pk: int) -> HttpResponse:
     """
     pedido = get_object_or_404(Order, pk=pk, user=request.user)
     return render(request, "tienda_app/detalle_pedido.html", {"pedido": pedido})
+
+
+@login_required
+def mis_pedidos(request: HttpRequest) -> HttpResponse:
+    """
+    Muestra todos los pedidos del usuario autenticado.
+    """
+
+    pedidos = (
+        Order.objects.filter(user=request.user)
+        .prefetch_related("items__product")
+        .order_by("-created_at")
+    )
+    return render(request, "tienda_app/mis_pedidos.html", {"pedidos": pedidos})
+
+
+@login_required
+def mercadopago_resultado(request: HttpRequest) -> HttpResponse:
+    """
+    Procesa el retorno desde Mercado Pago y actualiza el estado del pedido según el resultado.
+    """
+
+    external_reference = request.GET.get("external_reference")
+    if not external_reference:
+        messages.error(request, "No se recibió la referencia del pedido.")
+        return redirect("tienda_app:home")
+
+    try:
+        pedido_id = int(external_reference)
+    except (TypeError, ValueError):
+        messages.error(request, "Referencia de pedido inválida.")
+        return redirect("tienda_app:home")
+
+    pedido = get_object_or_404(Order, pk=pedido_id, user=request.user)
+    payment_id = request.GET.get("payment_id")
+    estado_reportado = request.GET.get("status") or request.GET.get("collection_status")
+
+    try:
+        pago = obtener_pago(payment_id)
+    except MercadoPagoError:
+        pago = None
+
+    estado = (pago or {}).get("status") or estado_reportado
+
+    if estado == "approved":
+        pedido.status = OrderStatus.COMPLETED
+        mensaje = "¡Pago aprobado! Tu pedido quedó confirmado."
+        nivel = messages.SUCCESS
+    elif estado in {"pending", "in_process"}:
+        pedido.status = OrderStatus.PENDING
+        mensaje = "El pago quedó pendiente. Te avisaremos cuando se acredite."
+        nivel = messages.INFO
+    else:
+        pedido.status = OrderStatus.CANCELLED
+        mensaje = "El pago fue cancelado o rechazado. Intentalo nuevamente."
+        nivel = messages.WARNING
+
+    pedido.save(update_fields=["status"])
+    messages.add_message(request, nivel, mensaje)
+    return redirect("tienda_app:detalle_pedido", pk=pedido.pk)
 
 
 def registrar_usuario(request: HttpRequest) -> HttpResponse:
