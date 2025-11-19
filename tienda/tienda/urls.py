@@ -21,6 +21,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),  # URLs de django-allauth
     path('', include('tienda_app.urls')),
 ]
 

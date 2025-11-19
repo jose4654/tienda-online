@@ -25,5 +25,11 @@ cd tienda
 echo "Collecting static files..."
 python manage.py collectstatic --no-input
 
+# Configurar el sitio de Django para django-allauth
+echo "Configuring Django site..."
+cd ..
+python configurar_sitio.py
+cd tienda
+
 echo "Build completed successfully!"
 
