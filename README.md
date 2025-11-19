@@ -1,5 +1,5 @@
 # Tienda Online - Django
-
+d
 Tienda online completa con panel de administración integrado usando Django Admin.
 
 ## Características
