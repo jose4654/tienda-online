@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block titulo %}Error de autenticación{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card sombra-suave border-danger">
+        <div class="card-body text-center">
+          <div class="mb-4">
+            <i class="fas fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+          </div>
+          <h2 class="card-title mb-4 text-danger">Error de autenticación</h2>
+          
+          <p class="mb-4">Ocurrió un error al intentar iniciar sesión con tu cuenta social.</p>
+          
+          {% if error %}
+            <div class="alert alert-danger" role="alert">
+              <strong>Error:</strong> {{ error }}
+            </div>
+          {% endif %}
+
+          <div class="d-grid gap-2">
+            <a href="{% url 'account_login' %}" class="btn btn-primary">
+              <i class="fas fa-arrow-left me-2"></i> Volver al inicio de sesión
+            </a>
+            <a href="{% url 'tienda_app:home' %}" class="btn btn-outline-secondary">
+              <i class="fas fa-home me-2"></i> Ir al inicio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

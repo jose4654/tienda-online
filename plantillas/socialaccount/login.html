@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block titulo %}Iniciar sesión con {{ provider.name }}{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card sombra-suave">
+        <div class="card-body text-center">
+          <h2 class="card-title mb-4">Iniciar sesión con {{ provider.name }}</h2>
+          
+          <p class="mb-4">Estás a punto de iniciar sesión usando tu cuenta de {{ provider.name }}.</p>
+
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary w-100 mb-3">
+              <i class="fas fa-check me-2"></i> Continuar
+            </button>
+          </form>
+
+          <a href="{% url 'account_login' %}" class="btn btn-outline-secondary w-100">
+            <i class="fas fa-arrow-left me-2"></i> Volver
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
