@@ -4,6 +4,15 @@ from django.contrib.auth.models import Group
 
 from .models import Category, Order, OrderItem, Product
 
+# Ocultar modelos de django-allauth y django.contrib.sites del admin
+from allauth.socialaccount.models import SocialApp, SocialAccount, SocialToken
+from django.contrib.sites.models import Site
+
+admin.site.unregister(SocialApp)
+admin.site.unregister(SocialAccount)
+admin.site.unregister(SocialToken)
+admin.site.unregister(Site)
+
 admin.site.site_header = "Administración de MiTienda"
 admin.site.site_title = "MiTienda"
 admin.site.index_title = "Panel de control"
